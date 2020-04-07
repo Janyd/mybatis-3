@@ -18,6 +18,8 @@ package org.apache.ibatis.parsing;
 import java.util.Properties;
 
 /**
+ * properties文件解析
+ *
  * @author Clinton Begin
  * @author Kazuki Shimizu
  */
@@ -53,8 +55,12 @@ public class PropertyParser {
     }
 
     public static String parse(String string, Properties variables) {
+        //变量处理器
         VariableTokenHandler handler = new VariableTokenHandler(variables);
+
+        //通用处理器
         GenericTokenParser parser = new GenericTokenParser("${", "}", handler);
+        //解析执行
         return parser.parse(string);
     }
 

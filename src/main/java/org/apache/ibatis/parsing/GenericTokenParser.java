@@ -16,12 +16,25 @@
 package org.apache.ibatis.parsing;
 
 /**
+ * 通用token解析器
+ *
  * @author Clinton Begin
  */
 public class GenericTokenParser {
 
+    /**
+     * 开始字符串
+     */
     private final String openToken;
+
+    /**
+     * 结束字符串
+     */
     private final String closeToken;
+
+    /**
+     * token处理器
+     */
     private final TokenHandler handler;
 
     public GenericTokenParser(String openToken, String closeToken, TokenHandler handler) {
@@ -46,7 +59,9 @@ public class GenericTokenParser {
         while (start > -1) {
             if (start > 0 && src[start - 1] == '\\') {
                 // this open token is escaped. remove the backslash and continue.
+                //由于openToken前是转义字符\,需要忽略
                 builder.append(src, offset, start - offset - 1).append(openToken);
+                //重新定位偏移位
                 offset = start + openToken.length();
             } else {
                 // found open token. let's search close token.

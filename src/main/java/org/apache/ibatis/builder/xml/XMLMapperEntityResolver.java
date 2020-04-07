@@ -25,6 +25,8 @@ import java.io.InputStream;
 import java.util.Locale;
 
 /**
+ * XML 实体解析器，主要为了加载mybatis相关的dtd
+ *
  * Offline entity resolver for the MyBatis DTDs.
  *
  * @author Clinton Begin
