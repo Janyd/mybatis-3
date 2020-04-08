@@ -24,6 +24,7 @@ import java.util.*;
 import java.util.Map.Entry;
 
 /**
+ * 反射器 作用是收集Class的getter setter方法、字段、构造函数等等信息，并且缓存缓存在 @see org.apache.ibatis.reflection.DefaultReflectorFactory#reflectorMap
  * This class represents a cached set of class definition information that
  * allows for easy mapping between property names and getter/setter methods.
  *
@@ -31,25 +32,73 @@ import java.util.Map.Entry;
  */
 public class Reflector {
 
+    /**
+     * 反射的Class类型
+     */
     private final Class<?> type;
+
+    /**
+     * 可通过getter读取的字段数组
+     */
     private final String[] readablePropertyNames;
+
+    /**
+     * 可通过setter写入的字段数组
+     */
     private final String[] writablePropertyNames;
+
+    /**
+     * setter方法Method并封装在Invoker内，方便于执行setter方法，key ->字段名称 value -> set的 Invoker
+     */
     private final Map<String, Invoker> setMethods = new HashMap<>();
+
+    /**
+     * getter方法Method方法封装在Invoker内，方便于执行getter方法，key->字段名称 value-> get的 Invoker
+     */
     private final Map<String, Invoker> getMethods = new HashMap<>();
+
+    /**
+     * setter方法，入参类型
+     */
     private final Map<String, Class<?>> setTypes = new HashMap<>();
+
+    /**
+     * getter方法，出参类型
+     */
     private final Map<String, Class<?>> getTypes = new HashMap<>();
+
+    /**
+     * Class 默认构造函数 ，一般为无参数构造函数
+     */
     private Constructor<?> defaultConstructor;
 
+    /**
+     * 字段大小写转换，大写字段名key -> 小写字段名value
+     */
     private Map<String, String> caseInsensitivePropertyMap = new HashMap<>();
 
     public Reflector(Class<?> clazz) {
+        //反射器处理的Class
         type = clazz;
+
+        //添加默认构造函数Method
         addDefaultConstructor(clazz);
+
+        //查找并添加getter方法
         addGetMethods(clazz);
+
+        //查找并添加setter方法
         addSetMethods(clazz);
+
+        //查找Class的字段
         addFields(clazz);
+
+        //获取可通过getter字段名
         readablePropertyNames = getMethods.keySet().toArray(new String[0]);
+        //获取可通过setter的字段名
         writablePropertyNames = setMethods.keySet().toArray(new String[0]);
+
+
         for (String propName : readablePropertyNames) {
             caseInsensitivePropertyMap.put(propName.toUpperCase(Locale.ENGLISH), propName);
         }
@@ -60,30 +109,43 @@ public class Reflector {
 
     private void addDefaultConstructor(Class<?> clazz) {
         Constructor<?>[] constructors = clazz.getDeclaredConstructors();
+
+        //获取无参的构造函数
         Arrays.stream(constructors).filter(constructor -> constructor.getParameterTypes().length == 0)
             .findAny().ifPresent(constructor -> this.defaultConstructor = constructor);
     }
 
     private void addGetMethods(Class<?> clazz) {
         Map<String, List<Method>> conflictingGetters = new HashMap<>();
+        //获取Class的所有方法包含了父类与接口方法
         Method[] methods = getClassMethods(clazz);
+        //经过过滤只保留getter方法
         Arrays.stream(methods).filter(m -> m.getParameterTypes().length == 0 && PropertyNamer.isGetter(m.getName()))
             .forEach(m -> addMethodConflict(conflictingGetters, PropertyNamer.methodToProperty(m.getName()), m));
         resolveGetterConflicts(conflictingGetters);
     }
 
+    /**
+     * 解决getter冲突方法
+     *
+     * @param conflictingGetters
+     */
     private void resolveGetterConflicts(Map<String, List<Method>> conflictingGetters) {
+        //遍历每个属性，查找其最匹配的方法。因为子类可以覆写父类的方法，所以一个属性可能拥有多个getter方法
         for (Entry<String, List<Method>> entry : conflictingGetters.entrySet()) {
+            //getter方法胜出者
             Method winner = null;
             String propName = entry.getKey();
             boolean isAmbiguous = false;
             for (Method candidate : entry.getValue()) {
+
                 if (winner == null) {
                     winner = candidate;
                     continue;
                 }
                 Class<?> winnerType = winner.getReturnType();
                 Class<?> candidateType = candidate.getReturnType();
+                //类型相同
                 if (candidateType.equals(winnerType)) {
                     if (!boolean.class.equals(candidateType)) {
                         isAmbiguous = true;
@@ -92,8 +154,10 @@ public class Reflector {
                         winner = candidate;
                     }
                 } else if (candidateType.isAssignableFrom(winnerType)) {
+                    //判断candidateType是否是winnerType的父类
                     // OK getter type is descendant
                 } else if (winnerType.isAssignableFrom(candidateType)) {
+                    //如果candidateType 是candidateType的子类，需要替换为子类
                     winner = candidate;
                 } else {
                     isAmbiguous = true;
@@ -104,6 +168,13 @@ public class Reflector {
         }
     }
 
+    /**
+     * 添加getter方法
+     *
+     * @param name        属性名
+     * @param method      方法类
+     * @param isAmbiguous 该方法是否有歧义
+     */
     private void addGetMethod(String name, Method method, boolean isAmbiguous) {
         MethodInvoker invoker = isAmbiguous
             ? new AmbiguousMethodInvoker(method, MessageFormat.format(
@@ -131,10 +202,12 @@ public class Reflector {
     }
 
     private void resolveSetterConflicts(Map<String, List<Method>> conflictingSetters) {
+        // 遍历每个属性，查找其最匹配的方法。因为子类可以覆写父类的方法，所以一个属性，可能对应多个 setting 方法
         for (Entry<String, List<Method>> entry : conflictingSetters.entrySet()) {
             String propName = entry.getKey();
             List<Method> setters = entry.getValue();
             Class<?> getterType = getTypes.get(propName);
+            //提取getter，判断其是否有歧义的getter
             boolean isGetterAmbiguous = getMethods.get(propName) instanceof AmbiguousMethodInvoker;
             boolean isSetterAmbiguous = false;
             Method match = null;
@@ -166,6 +239,7 @@ public class Reflector {
         } else if (paramType2.isAssignableFrom(paramType1)) {
             return setter1;
         }
+        //封装AmbiguousMethodInvoker用于在调用方法时，直接报错
         MethodInvoker invoker = new AmbiguousMethodInvoker(setter1,
             MessageFormat.format(
                 "Ambiguous setters defined for property ''{0}'' in class ''{1}'' with types ''{2}'' and ''{3}''.",
@@ -186,10 +260,13 @@ public class Reflector {
     private Class<?> typeToClass(Type src) {
         Class<?> result = null;
         if (src instanceof Class) {
+            //普通类型，直接使用类
             result = (Class<?>) src;
         } else if (src instanceof ParameterizedType) {
+            //泛型类型，使用泛型
             result = (Class<?>) ((ParameterizedType) src).getRawType();
         } else if (src instanceof GenericArrayType) {
+            //泛型数组，获得具体类
             Type componentType = ((GenericArrayType) src).getGenericComponentType();
             if (componentType instanceof Class) {
                 result = Array.newInstance((Class<?>) componentType, 0).getClass();
@@ -304,6 +381,8 @@ public class Reflector {
     }
 
     /**
+     * 判断是否可修改可访问性
+     * <p>
      * Checks whether can control member accessible.
      *
      * @return If can control member accessible, it return {@literal true}
