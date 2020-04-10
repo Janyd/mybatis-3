@@ -26,6 +26,9 @@ import java.lang.reflect.Method;
 public class MethodInvoker implements Invoker {
 
     private final Class<?> type;
+    /**
+     * 方法对象
+     */
     private final Method method;
 
     public MethodInvoker(Method method) {
@@ -41,6 +44,7 @@ public class MethodInvoker implements Invoker {
     @Override
     public Object invoke(Object target, Object[] args) throws IllegalAccessException, InvocationTargetException {
         try {
+            //执行target对应方法
             return method.invoke(target, args);
         } catch (IllegalAccessException e) {
             if (Reflector.canControlMemberAccessible()) {

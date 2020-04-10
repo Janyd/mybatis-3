@@ -20,6 +20,8 @@ import org.apache.ibatis.reflection.Reflector;
 import java.lang.reflect.Field;
 
 /**
+ * getter方法Invoker
+ *
  * @author Clinton Begin
  */
 public class GetFieldInvoker implements Invoker {
@@ -32,9 +34,11 @@ public class GetFieldInvoker implements Invoker {
     @Override
     public Object invoke(Object target, Object[] args) throws IllegalAccessException {
         try {
+            //给target获取field字段，
             return field.get(target);
         } catch (IllegalAccessException e) {
             if (Reflector.canControlMemberAccessible()) {
+                //异常，直接开启可访问性设置值
                 field.setAccessible(true);
                 return field.get(target);
             } else {

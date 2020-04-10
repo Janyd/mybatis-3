@@ -21,6 +21,9 @@ import org.apache.ibatis.reflection.ReflectionException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
+/**
+ * 在执行时直接抛异常
+ */
 public class AmbiguousMethodInvoker extends MethodInvoker {
     private final String exceptionMessage;
 

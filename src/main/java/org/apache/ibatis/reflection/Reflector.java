@@ -282,29 +282,43 @@ public class Reflector {
     }
 
     private void addFields(Class<?> clazz) {
+        //获取属性
         Field[] fields = clazz.getDeclaredFields();
         for (Field field : fields) {
             if (!setMethods.containsKey(field.getName())) {
+                //当字段不存在setter方法时
                 // issue #379 - removed the check for final because JDK 1.5 allows
                 // modification of final fields through reflection (JSR-133). (JGB)
                 // pr #16 - final static can only be set by the classloader
+                //获取属性的修饰符
                 int modifiers = field.getModifiers();
+
                 if (!(Modifier.isFinal(modifiers) && Modifier.isStatic(modifiers))) {
+                    //仅当非final与static
                     addSetField(field);
                 }
             }
             if (!getMethods.containsKey(field.getName())) {
+                //当字段不存在getter方法时
                 addGetField(field);
             }
         }
         if (clazz.getSuperclass() != null) {
+            //获取父类的字段
             addFields(clazz.getSuperclass());
         }
     }
 
+    /**
+     * 添加字段的setter方法
+     *
+     * @param field
+     */
     private void addSetField(Field field) {
         if (isValidPropertyName(field.getName())) {
+            //将字段无setter，给字段添加SetFieldInvoker方法
             setMethods.put(field.getName(), new SetFieldInvoker(field));
+            //获取真实field类型
             Type fieldType = TypeParameterResolver.resolveFieldType(field, type);
             setTypes.put(field.getName(), typeToClass(fieldType));
         }
@@ -312,12 +326,19 @@ public class Reflector {
 
     private void addGetField(Field field) {
         if (isValidPropertyName(field.getName())) {
+            //给字段封装getter的Invoker
             getMethods.put(field.getName(), new GetFieldInvoker(field));
             Type fieldType = TypeParameterResolver.resolveFieldType(field, type);
             getTypes.put(field.getName(), typeToClass(fieldType));
         }
     }
 
+    /**
+     * 判断是否有效属性值
+     *
+     * @param name
+     * @return
+     */
     private boolean isValidPropertyName(String name) {
         return !(name.startsWith("$") || "serialVersionUID".equals(name) || "class".equals(name));
     }

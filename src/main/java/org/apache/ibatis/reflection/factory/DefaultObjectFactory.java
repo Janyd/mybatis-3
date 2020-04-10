@@ -43,15 +43,26 @@ public class DefaultObjectFactory implements ObjectFactory, Serializable {
         return (T) instantiateClass(classToCreate, constructorArgTypes, constructorArgs);
     }
 
+    /**
+     * 对type实例化
+     *
+     * @param type                Class类型
+     * @param constructorArgTypes 构造函数入参类型，如为null则为默认构造函数
+     * @param constructorArgs     构造函数入参，如为null则为默认构造函数
+     * @param <T>                 Class对象
+     * @return
+     */
     private <T> T instantiateClass(Class<T> type, List<Class<?>> constructorArgTypes, List<Object> constructorArgs) {
         try {
             Constructor<T> constructor;
             if (constructorArgTypes == null || constructorArgs == null) {
+                //默认构造函数
                 constructor = type.getDeclaredConstructor();
                 try {
                     return constructor.newInstance();
                 } catch (IllegalAccessException e) {
                     if (Reflector.canControlMemberAccessible()) {
+                        //有访问权限问题，则开启可访问权限，实例化
                         constructor.setAccessible(true);
                         return constructor.newInstance();
                     } else {
@@ -59,11 +70,13 @@ public class DefaultObjectFactory implements ObjectFactory, Serializable {
                     }
                 }
             }
+            //获取入参的构造函数
             constructor = type.getDeclaredConstructor(constructorArgTypes.toArray(new Class[0]));
             try {
                 return constructor.newInstance(constructorArgs.toArray(new Object[0]));
             } catch (IllegalAccessException e) {
                 if (Reflector.canControlMemberAccessible()) {
+                    //有访问权限问题，则开启可访问权限，实例化
                     constructor.setAccessible(true);
                     return constructor.newInstance(constructorArgs.toArray(new Object[0]));
                 } else {
@@ -79,6 +92,12 @@ public class DefaultObjectFactory implements ObjectFactory, Serializable {
         }
     }
 
+    /**
+     * 解决type是集合接口的情况
+     *
+     * @param type
+     * @return
+     */
     protected Class<?> resolveInterface(Class<?> type) {
         Class<?> classToCreate;
         if (type == List.class || type == Collection.class || type == Iterable.class) {
@@ -95,6 +114,13 @@ public class DefaultObjectFactory implements ObjectFactory, Serializable {
         return classToCreate;
     }
 
+    /**
+     * 判断Class是否是Collection类型
+     *
+     * @param type Object type
+     * @param <T>
+     * @return
+     */
     @Override
     public <T> boolean isCollection(Class<T> type) {
         return Collection.class.isAssignableFrom(type);

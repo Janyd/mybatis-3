@@ -26,15 +26,15 @@ public class TypeParameterResolver {
     /**
      * Resolve field type.
      *
-     * @param field
-     *          the field
-     * @param srcType
-     *          the src type
+     * @param field   the field
+     * @param srcType the src type
      * @return The field type as {@link Type}. If it has type parameters in the declaration,<br>
-     *         they will be resolved to the actual runtime {@link Type}s.
+     * they will be resolved to the actual runtime {@link Type}s.
      */
     public static Type resolveFieldType(Field field, Type srcType) {
+        //获取字段的类型
         Type fieldType = field.getGenericType();
+        //获取字段所在Class类型
         Class<?> declaringClass = field.getDeclaringClass();
         return resolveType(fieldType, srcType, declaringClass);
     }
@@ -42,12 +42,10 @@ public class TypeParameterResolver {
     /**
      * Resolve return type.
      *
-     * @param method
-     *          the method
-     * @param srcType
-     *          the src type
+     * @param method  the method
+     * @param srcType the src type
      * @return The return type of the method as {@link Type}. If it has type parameters in the declaration,<br>
-     *         they will be resolved to the actual runtime {@link Type}s.
+     * they will be resolved to the actual runtime {@link Type}s.
      */
     public static Type resolveReturnType(Method method, Type srcType) {
         Type returnType = method.getGenericReturnType();
@@ -58,13 +56,11 @@ public class TypeParameterResolver {
     /**
      * Resolve param types.
      *
-     * @param method
-     *          the method
-     * @param srcType
-     *          the src type
+     * @param method  the method
+     * @param srcType the src type
      * @return The parameter types of the method as an array of {@link Type}s. If they have type parameters in the
-     *         declaration,<br>
-     *         they will be resolved to the actual runtime {@link Type}s.
+     * declaration,<br>
+     * they will be resolved to the actual runtime {@link Type}s.
      */
     public static Type[] resolveParamTypes(Method method, Type srcType) {
         Type[] paramTypes = method.getGenericParameterTypes();
@@ -76,6 +72,14 @@ public class TypeParameterResolver {
         return result;
     }
 
+    /**
+     * 获取真实type类型 有可能被泛型定义
+     *
+     * @param type
+     * @param srcType
+     * @param declaringClass
+     * @return
+     */
     private static Type resolveType(Type type, Type srcType, Class<?> declaringClass) {
         if (type instanceof TypeVariable) {
             return resolveTypeVar((TypeVariable<?>) type, srcType, declaringClass);

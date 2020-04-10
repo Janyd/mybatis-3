@@ -27,6 +27,8 @@ import java.lang.reflect.Type;
 import java.util.Collection;
 
 /**
+ * Class 元数据
+ *
  * @author Clinton Begin
  */
 public class MetaClass {
@@ -39,14 +41,26 @@ public class MetaClass {
         this.reflector = reflectorFactory.findForClass(type);
     }
 
+    /**
+     * 快速获取MetaClass
+     * @param type
+     * @param reflectorFactory
+     * @return
+     */
     public static MetaClass forClass(Class<?> type, ReflectorFactory reflectorFactory) {
         return new MetaClass(type, reflectorFactory);
     }
 
+    /**
+     * 获取属性类型的MetaClass
+     * @param name
+     * @return
+     */
     public MetaClass metaClassForProperty(String name) {
         Class<?> propType = reflector.getGetterType(name);
         return MetaClass.forClass(propType, reflectorFactory);
     }
+
 
     public String findProperty(String name) {
         StringBuilder prop = buildProperty(name, new StringBuilder());

@@ -32,9 +32,11 @@ public class SetFieldInvoker implements Invoker {
     @Override
     public Object invoke(Object target, Object[] args) throws IllegalAccessException {
         try {
+            //给target设置field字段，
             field.set(target, args[0]);
         } catch (IllegalAccessException e) {
             if (Reflector.canControlMemberAccessible()) {
+                //异常，直接开启可访问性设置值
                 field.setAccessible(true);
                 field.set(target, args[0]);
             } else {
