@@ -25,6 +25,9 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.util.*;
 
+/**
+ * 解析Mapper方法上的参数名称
+ */
 public class ParamNameResolver {
 
     public static final String GENERIC_NAME_PREFIX = "param";
@@ -46,6 +49,9 @@ public class ParamNameResolver {
      */
     private final SortedMap<Integer, String> names;
 
+    /**
+     * 是否使用@Param注解
+     */
     private boolean hasParamAnnotation;
 
     public ParamNameResolver(Configuration config, Method method) {
@@ -109,8 +115,7 @@ public class ParamNameResolver {
      * ...).
      * </p>
      *
-     * @param args
-     *          the args
+     * @param args the args
      * @return the named params
      */
     public Object getNamedParams(Object[] args) {
@@ -140,7 +145,7 @@ public class ParamNameResolver {
     /**
      * Wrap to a {@link ParamMap} if object is {@link Collection} or array.
      *
-     * @param object a parameter object
+     * @param object          a parameter object
      * @param actualParamName an actual parameter name
      *                        (If specify a name, set an object to {@link ParamMap} with specified name)
      * @return a {@link ParamMap}

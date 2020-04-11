@@ -23,6 +23,8 @@ import org.apache.ibatis.reflection.property.PropertyTokenizer;
 import java.util.List;
 
 /**
+ * Bean封装，基于属性表达式getter setter以达到类似ognl效果
+ *
  * @author Clinton Begin
  */
 public class BeanWrapper extends BaseWrapper {

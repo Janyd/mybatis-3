@@ -22,6 +22,8 @@ import org.apache.ibatis.reflection.property.PropertyTokenizer;
 import java.util.List;
 
 /**
+ * 对象封装，基于MetaClass
+ *
  * @author Clinton Begin
  */
 public interface ObjectWrapper {

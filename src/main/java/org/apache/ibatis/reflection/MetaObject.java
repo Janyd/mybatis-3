@@ -24,6 +24,8 @@ import java.util.List;
 import java.util.Map;
 
 /**
+ * 对象封装
+ *
  * @author Clinton Begin
  */
 public class MetaObject {
@@ -41,6 +43,7 @@ public class MetaObject {
         this.reflectorFactory = reflectorFactory;
 
         if (object instanceof ObjectWrapper) {
+
             this.objectWrapper = (ObjectWrapper) object;
         } else if (objectWrapperFactory.hasWrapperFor(object)) {
             this.objectWrapper = objectWrapperFactory.getWrapperFor(this, object);
