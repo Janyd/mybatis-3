@@ -23,6 +23,8 @@ import org.apache.ibatis.session.SqlSession;
 import java.util.*;
 
 /**
+ * Mapper注册中心
+ *
  * @author Clinton Begin
  * @author Eduardo Macarron
  * @author Lasse Voss
@@ -36,6 +38,14 @@ public class MapperRegistry {
         this.config = config;
     }
 
+    /**
+     * 获取type Mapper代理实现
+     *
+     * @param type
+     * @param sqlSession
+     * @param <T>
+     * @return
+     */
     @SuppressWarnings("unchecked")
     public <T> T getMapper(Class<T> type, SqlSession sqlSession) {
         final MapperProxyFactory<T> mapperProxyFactory = (MapperProxyFactory<T>) knownMappers.get(type);
@@ -53,6 +63,12 @@ public class MapperRegistry {
         return knownMappers.containsKey(type);
     }
 
+    /**
+     * 添加Class<T>的MapperProxy工厂类
+     *
+     * @param type TMapper的Class
+     * @param <T>
+     */
     public <T> void addMapper(Class<T> type) {
         if (type.isInterface()) {
             if (hasMapper(type)) {
@@ -88,10 +104,8 @@ public class MapperRegistry {
     /**
      * Adds the mappers.
      *
-     * @param packageName
-     *          the package name
-     * @param superType
-     *          the super type
+     * @param packageName the package name
+     * @param superType   the super type
      * @since 3.2.2
      */
     public void addMappers(String packageName, Class<?> superType) {
@@ -106,8 +120,7 @@ public class MapperRegistry {
     /**
      * Adds the mappers.
      *
-     * @param packageName
-     *          the package name
+     * @param packageName the package name
      * @since 3.2.2
      */
     public void addMappers(String packageName) {

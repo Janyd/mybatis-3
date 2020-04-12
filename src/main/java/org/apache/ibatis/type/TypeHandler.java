@@ -21,27 +21,52 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 /**
+ * 类型处理器 T 指定类型
+ *
  * @author Clinton Begin
  */
 public interface TypeHandler<T> {
 
+    /**
+     * 设置值，指在执行SQL时需要在？占位符上设置值
+     *
+     * @param ps        预编译的Statement
+     * @param i         第几个参数
+     * @param parameter 参数值
+     * @param jdbcType  JdbcType类型
+     * @throws SQLException
+     */
     void setParameter(PreparedStatement ps, int i, T parameter, JdbcType jdbcType) throws SQLException;
 
     /**
      * Gets the result.
+     * 获取结果时，需要对ColumnName进行自定义类型转换
      *
-     * @param rs
-     *          the rs
-     * @param columnName
-     *          Colunm name, when configuration <code>useColumnLabel</code> is <code>false</code>
+     * @param rs         the rs
+     * @param columnName Colunm name, when configuration <code>useColumnLabel</code> is <code>false</code>
      * @return the result
-     * @throws SQLException
-     *           the SQL exception
+     * @throws SQLException the SQL exception
      */
     T getResult(ResultSet rs, String columnName) throws SQLException;
 
+    /**
+     * 同上，只是columnIndex为第几列
+     *
+     * @param rs          结果集
+     * @param columnIndex 列下标
+     * @return
+     * @throws SQLException
+     */
     T getResult(ResultSet rs, int columnIndex) throws SQLException;
 
+    /**
+     * 同上
+     *
+     * @param cs
+     * @param columnIndex
+     * @return
+     * @throws SQLException
+     */
     T getResult(CallableStatement cs, int columnIndex) throws SQLException;
 
 }

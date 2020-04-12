@@ -29,6 +29,8 @@ import java.util.Set;
 import java.util.regex.Pattern;
 
 /**
+ * 解析XML基础构建 抽象类
+ *
  * @author Clinton Begin
  */
 public abstract class BaseBuilder {
@@ -46,18 +48,46 @@ public abstract class BaseBuilder {
         return configuration;
     }
 
+    /**
+     * 解析表达式
+     *
+     * @param regex        正则表达式
+     * @param defaultValue 默认值
+     * @return
+     */
     protected Pattern parseExpression(String regex, String defaultValue) {
         return Pattern.compile(regex == null ? defaultValue : regex);
     }
 
+    /**
+     * 将字符串boolean解析为Boolean类型
+     *
+     * @param value        值
+     * @param defaultValue 默认值
+     * @return
+     */
     protected Boolean booleanValueOf(String value, Boolean defaultValue) {
         return value == null ? defaultValue : Boolean.valueOf(value);
     }
 
+    /**
+     * 同上
+     *
+     * @param value        值
+     * @param defaultValue 默认值
+     * @return
+     */
     protected Integer integerValueOf(String value, Integer defaultValue) {
         return value == null ? defaultValue : Integer.valueOf(value);
     }
 
+    /**
+     * 同上
+     *
+     * @param value        值
+     * @param defaultValue 默认值
+     * @return
+     */
     protected Set<String> stringSetValueOf(String value, String defaultValue) {
         value = value == null ? defaultValue : value;
         return new HashSet<>(Arrays.asList(value.split(",")));
@@ -96,6 +126,12 @@ public abstract class BaseBuilder {
         }
     }
 
+    /**
+     * 创建别名的实例
+     *
+     * @param alias
+     * @return
+     */
     protected Object createInstance(String alias) {
         Class<?> clazz = resolveClass(alias);
         if (clazz == null) {
@@ -108,6 +144,13 @@ public abstract class BaseBuilder {
         }
     }
 
+    /**
+     * 解决alias的Class
+     *
+     * @param alias
+     * @param <T>
+     * @return
+     */
     protected <T> Class<? extends T> resolveClass(String alias) {
         if (alias == null) {
             return null;
@@ -118,6 +161,7 @@ public abstract class BaseBuilder {
             throw new BuilderException("Error resolving class. Cause: " + e, e);
         }
     }
+
 
     protected TypeHandler<?> resolveTypeHandler(Class<?> javaType, String typeHandlerAlias) {
         if (typeHandlerAlias == null) {
