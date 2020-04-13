@@ -22,6 +22,8 @@ import org.apache.ibatis.mapping.ResultMapping;
 import java.util.List;
 
 /**
+ * ResultMap解决者
+ *
  * @author Eduardo Macarron
  */
 public class ResultMapResolver {

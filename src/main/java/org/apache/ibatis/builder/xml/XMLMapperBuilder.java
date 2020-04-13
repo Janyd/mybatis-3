@@ -32,6 +32,8 @@ import java.io.Reader;
 import java.util.*;
 
 /**
+ * 解析Mapper.xml文件
+ *
  * @author Clinton Begin
  * @author Kazuki Shimizu
  */
@@ -90,6 +92,7 @@ public class XMLMapperBuilder extends BaseBuilder {
 
     private void configurationElement(XNode context) {
         try {
+            //获取namespace，mapper.xml文件必须得有该值，否则无法被解析
             String namespace = context.getStringAttribute("namespace");
             if (namespace == null || namespace.isEmpty()) {
                 throw new BuilderException("Mapper's namespace cannot be empty");
@@ -97,7 +100,9 @@ public class XMLMapperBuilder extends BaseBuilder {
             builderAssistant.setCurrentNamespace(namespace);
             cacheRefElement(context.evalNode("cache-ref"));
             cacheElement(context.evalNode("cache"));
+            //解析parameter节点
             parameterMapElement(context.evalNodes("/mapper/parameterMap"));
+            //
             resultMapElements(context.evalNodes("/mapper/resultMap"));
             sqlElement(context.evalNodes("/mapper/sql"));
             buildStatementFromContext(context.evalNodes("select|insert|update|delete"));
@@ -238,10 +243,12 @@ public class XMLMapperBuilder extends BaseBuilder {
 
     private ResultMap resultMapElement(XNode resultMapNode, List<ResultMapping> additionalResultMappings, Class<?> enclosingType) {
         ErrorContext.instance().activity("processing " + resultMapNode.getValueBasedIdentifier());
+        //获取ResultMap的 返回类型
         String type = resultMapNode.getStringAttribute("type",
             resultMapNode.getStringAttribute("ofType",
                 resultMapNode.getStringAttribute("resultType",
                     resultMapNode.getStringAttribute("javaType"))));
+        //获取Class
         Class<?> typeClass = resolveClass(type);
         if (typeClass == null) {
             typeClass = inheritEnclosingType(resultMapNode, enclosingType);
@@ -264,6 +271,7 @@ public class XMLMapperBuilder extends BaseBuilder {
         }
         String id = resultMapNode.getStringAttribute("id",
             resultMapNode.getValueBasedIdentifier());
+        //获取ResultMap继承的ResultMap
         String extend = resultMapNode.getStringAttribute("extends");
         Boolean autoMapping = resultMapNode.getBooleanAttribute("autoMapping");
         ResultMapResolver resultMapResolver = new ResultMapResolver(builderAssistant, id, typeClass, extend, discriminator, resultMappings, autoMapping);
@@ -350,6 +358,13 @@ public class XMLMapperBuilder extends BaseBuilder {
         return context.getStringAttribute("databaseId") == null;
     }
 
+    /**
+     * 构建ResultMapping
+     * @param context       节点
+     * @param resultType    返回类型
+     * @param flags 是否是id或构造参数
+     * @return ResultMapping
+     */
     private ResultMapping buildResultMappingFromContext(XNode context, Class<?> resultType, List<ResultFlag> flags) {
         String property;
         if (flags.contains(ResultFlag.CONSTRUCTOR)) {
