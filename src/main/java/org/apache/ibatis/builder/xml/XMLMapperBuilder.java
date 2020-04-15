@@ -90,9 +90,14 @@ public class XMLMapperBuilder extends BaseBuilder {
         return sqlFragments.get(refid);
     }
 
+    /**
+     * 开始解析mapper.xml文件
+     *
+     * @param context mapper节点
+     */
     private void configurationElement(XNode context) {
         try {
-            //获取namespace，mapper.xml文件必须得有该值，否则无法被解析
+            //获取namespace，mapper.xml文件必须得有该值，否则无法被解析，Mapper接口类的全限定名
             String namespace = context.getStringAttribute("namespace");
             if (namespace == null || namespace.isEmpty()) {
                 throw new BuilderException("Mapper's namespace cannot be empty");

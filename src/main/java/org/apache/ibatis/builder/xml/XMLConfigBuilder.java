@@ -438,7 +438,7 @@ public class XMLConfigBuilder extends BaseBuilder {
                     String url = child.getStringAttribute("url");
                     String mapperClass = child.getStringAttribute("class");
                     if (resource != null && url == null && mapperClass == null) {
-                        //加载resource路劲的xml文件
+                        //加载resource路径的xml文件
                         ErrorContext.instance().resource(resource);
                         InputStream inputStream = Resources.getResourceAsStream(resource);
                         //解析XML文件

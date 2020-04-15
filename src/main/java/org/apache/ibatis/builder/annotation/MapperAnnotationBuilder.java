@@ -49,6 +49,8 @@ import java.lang.reflect.*;
 import java.util.*;
 
 /**
+ * 以注解形式注册Mapper接口
+ *
  * @author Clinton Begin
  * @author Kazuki Shimizu
  */
@@ -98,6 +100,7 @@ public class MapperAnnotationBuilder {
                 try {
                     parseStatement(method);
                 } catch (IncompleteElementException e) {
+                    //如解析失败，先放入未完成解析方法集合中，在后续parsePendingMethods()方法中继续完成解析，目的为的是，例如：某些ResultMap引用的是别的Mapper中ResultMap
                     configuration.addIncompleteMethod(new MethodResolver(this, method));
                 }
             }

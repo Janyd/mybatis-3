@@ -30,6 +30,7 @@ import java.util.List;
 import java.util.Locale;
 
 /**
+ *
  * @author Clinton Begin
  */
 public class XMLStatementBuilder extends BaseBuilder {

@@ -30,6 +30,7 @@ import org.apache.ibatis.type.TypeHandler;
 import java.util.*;
 
 /**
+ *
  * @author Clinton Begin
  */
 public class MapperBuilderAssistant extends BaseBuilder {

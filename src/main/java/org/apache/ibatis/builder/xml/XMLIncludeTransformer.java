@@ -31,6 +31,8 @@ import java.util.Optional;
 import java.util.Properties;
 
 /**
+ * 解析mapper.xml中的 include标签
+ *
  * @author Frank D. Martinez [mnesarco]
  */
 public class XMLIncludeTransformer {
@@ -53,10 +55,8 @@ public class XMLIncludeTransformer {
     /**
      * Recursively apply includes through all SQL fragments.
      *
-     * @param source
-     *          Include node in DOM tree
-     * @param variablesContext
-     *          Current context for static variables with values
+     * @param source           Include node in DOM tree
+     * @param variablesContext Current context for static variables with values
      */
     private void applyIncludes(Node source, final Properties variablesContext, boolean included) {
         if (source.getNodeName().equals("include")) {
@@ -109,10 +109,8 @@ public class XMLIncludeTransformer {
     /**
      * Read placeholders and their values from include node definition.
      *
-     * @param node
-     *          Include node instance
-     * @param inheritedVariablesContext
-     *          Current context used for replace variables in new variables values
+     * @param node                      Include node instance
+     * @param inheritedVariablesContext Current context used for replace variables in new variables values
      * @return variables context from include instance (no inherited values)
      */
     private Properties getVariablesContext(Node node, Properties inheritedVariablesContext) {
