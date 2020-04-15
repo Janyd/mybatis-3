@@ -21,6 +21,8 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
+ * 继承 TrimSqlNode 最终逻辑由TrimSqlNode
+ *
  * @author Clinton Begin
  */
 public class WhereSqlNode extends TrimSqlNode {

@@ -23,6 +23,8 @@ import org.apache.ibatis.type.SimpleTypeRegistry;
 import java.util.regex.Pattern;
 
 /**
+ * 文本SQL,但不确定是否是动态SQL
+ *
  * @author Clinton Begin
  */
 public class TextSqlNode implements SqlNode {

@@ -21,6 +21,8 @@ import org.apache.ibatis.session.Configuration;
 import java.util.Map;
 
 /**
+ * 解析ForEach标签
+ *
  * @author Clinton Begin
  */
 public class ForEachSqlNode implements SqlNode {

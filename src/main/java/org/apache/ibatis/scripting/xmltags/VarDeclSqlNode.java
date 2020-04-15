@@ -16,6 +16,7 @@
 package org.apache.ibatis.scripting.xmltags;
 
 /**
+ * 用于解析bind标签
  * @author Frank D. Martinez [mnesarco]
  */
 public class VarDeclSqlNode implements SqlNode {

@@ -21,6 +21,8 @@ import java.util.Collections;
 import java.util.List;
 
 /**
+ * 继承 TrimSqlNode 最终逻辑由TrimSqlNode实现
+ *
  * @author Clinton Begin
  */
 public class SetSqlNode extends TrimSqlNode {

@@ -18,6 +18,8 @@ package org.apache.ibatis.scripting.xmltags;
 import java.util.List;
 
 /**
+ * 解析Choose标签
+ *
  * @author Clinton Begin
  */
 public class ChooseSqlNode implements SqlNode {

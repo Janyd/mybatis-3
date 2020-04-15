@@ -64,6 +64,9 @@ public class TrimSqlNode implements SqlNode {
         return Collections.emptyList();
     }
 
+    /**
+     * 拼装sql片段 前缀或后缀
+     */
     private class FilteredDynamicContext extends DynamicContext {
         private DynamicContext delegate;
         private boolean prefixApplied;
