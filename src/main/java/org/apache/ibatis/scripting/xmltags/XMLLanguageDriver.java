@@ -38,8 +38,17 @@ public class XMLLanguageDriver implements LanguageDriver {
         return new DefaultParameterHandler(mappedStatement, parameterObject, boundSql);
     }
 
+    /**
+     * 将script节点转换成SqlSource
+     *
+     * @param configuration The MyBatis configuration
+     * @param script        XNode parsed from a XML file
+     * @param parameterType input parameter type got from a mapper method or specified in the parameterType xml attribute. Can be null.
+     * @return
+     */
     @Override
     public SqlSource createSqlSource(Configuration configuration, XNode script, Class<?> parameterType) {
+        //创建XMLScriptBuilder进行解析
         XMLScriptBuilder builder = new XMLScriptBuilder(configuration, script, parameterType);
         return builder.parseScriptNode();
     }
@@ -48,10 +57,12 @@ public class XMLLanguageDriver implements LanguageDriver {
     public SqlSource createSqlSource(Configuration configuration, String script, Class<?> parameterType) {
         // issue #3
         if (script.startsWith("<script>")) {
+            //如果以<script>开头，则需要进一步对script节点进行解析
             XPathParser parser = new XPathParser(script, false, configuration.getVariables(), new XMLMapperEntityResolver());
             return createSqlSource(configuration, parser.evalNode("/script"), parameterType);
         } else {
             // issue #127
+            //进行动态变量替换
             script = PropertyParser.parse(script, configuration.getVariables());
             TextSqlNode textSqlNode = new TextSqlNode(script);
             if (textSqlNode.isDynamic()) {

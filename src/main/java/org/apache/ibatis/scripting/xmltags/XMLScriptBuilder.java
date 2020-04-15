@@ -30,6 +30,8 @@ import java.util.List;
 import java.util.Map;
 
 /**
+ * 解析动态SQL
+ *
  * @author Clinton Begin
  */
 public class XMLScriptBuilder extends BaseBuilder {
@@ -101,6 +103,9 @@ public class XMLScriptBuilder extends BaseBuilder {
         return new MixedSqlNode(contents);
     }
 
+    /**
+     * 节点处理接口
+     */
     private interface NodeHandler {
         void handleNode(XNode nodeToHandle, List<SqlNode> targetContents);
     }

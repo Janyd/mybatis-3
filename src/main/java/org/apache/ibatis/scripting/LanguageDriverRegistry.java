@@ -19,6 +19,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
+ * LanguageDriver注册表
+ *
  * @author Frank D. Martinez [mnesarco]
  */
 public class LanguageDriverRegistry {

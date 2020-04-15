@@ -189,6 +189,7 @@ public class Configuration {
         typeAliasRegistry.registerAlias("CGLIB", CglibProxyFactory.class);
         typeAliasRegistry.registerAlias("JAVASSIST", JavassistProxyFactory.class);
 
+        //languageDriver默认为XMLLanguageDriver
         languageRegistry.setDefaultDriverClass(XMLLanguageDriver.class);
         languageRegistry.register(RawLanguageDriver.class);
     }
@@ -324,8 +325,7 @@ public class Configuration {
     /**
      * Sets the auto mapping unknown column behavior.
      *
-     * @param autoMappingUnknownColumnBehavior
-     *          the new auto mapping unknown column behavior
+     * @param autoMappingUnknownColumnBehavior the new auto mapping unknown column behavior
      * @since 3.4.0
      */
     public void setAutoMappingUnknownColumnBehavior(AutoMappingUnknownColumnBehavior autoMappingUnknownColumnBehavior) {
@@ -420,8 +420,7 @@ public class Configuration {
     /**
      * Sets the default fetch size.
      *
-     * @param defaultFetchSize
-     *          the new default fetch size
+     * @param defaultFetchSize the new default fetch size
      * @since 3.3.0
      */
     public void setDefaultFetchSize(Integer defaultFetchSize) {
@@ -441,8 +440,7 @@ public class Configuration {
     /**
      * Sets the default result set type.
      *
-     * @param defaultResultSetType
-     *          the new default result set type
+     * @param defaultResultSetType the new default result set type
      * @since 3.5.2
      */
     public void setDefaultResultSetType(ResultSetType defaultResultSetType) {
@@ -488,6 +486,7 @@ public class Configuration {
     /**
      * Set a default {@link TypeHandler} class for {@link Enum}.
      * A default {@link TypeHandler} is {@link org.apache.ibatis.type.EnumTypeHandler}.
+     *
      * @param typeHandler a type handler class for {@link Enum}
      * @since 3.4.5
      */
@@ -563,8 +562,7 @@ public class Configuration {
     /**
      * Gets the language driver.
      *
-     * @param langClass
-     *          the lang class
+     * @param langClass the lang class
      * @return the language driver
      * @since 3.5.1
      */
@@ -874,8 +872,7 @@ public class Configuration {
     /**
      * Extracts namespace from fully qualified statement id.
      *
-     * @param statementId
-     *          the statement id
+     * @param statementId the statement id
      * @return namespace or null when id does not contain period.
      */
     protected String extractNamespace(String statementId) {
@@ -947,6 +944,7 @@ public class Configuration {
          * Assign a function for producing a conflict error message when contains value with the same key.
          * <p>
          * function arguments are 1st is saved value and 2nd is target value.
+         *
          * @param conflictMessageProducer A function for producing a conflict error message
          * @return a conflict error message
          * @since 3.5.0
