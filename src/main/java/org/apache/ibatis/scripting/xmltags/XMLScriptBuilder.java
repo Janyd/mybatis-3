@@ -52,7 +52,9 @@ public class XMLScriptBuilder extends BaseBuilder {
         initNodeHandlerMap();
     }
 
-
+    /**
+     * 初始化各种标签处理器
+     */
     private void initNodeHandlerMap() {
         nodeHandlerMap.put("trim", new TrimHandler());
         nodeHandlerMap.put("where", new WhereHandler());
