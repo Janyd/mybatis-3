@@ -40,7 +40,7 @@ public class ParameterExpression extends HashMap<String, String> {
     }
 
     private void parse(String expression) {
-        //找到不是空格的字符下标
+        //找到不是无效字符的下标
         int p = skipWS(expression, 0);
         if (expression.charAt(p) == '(') {
             expression(expression, p + 1);
@@ -72,6 +72,12 @@ public class ParameterExpression extends HashMap<String, String> {
         jdbcTypeOpt(expression, right);
     }
 
+    /**
+     * #{}的名称
+     *
+     * @param expression 表达式
+     * @param left       开始位置
+     */
     private void property(String expression, int left) {
         if (left < expression.length()) {
             int right = skipUntil(expression, left, ",:");
@@ -96,6 +102,16 @@ public class ParameterExpression extends HashMap<String, String> {
         return expression.length();
     }
 
+    /**
+     * 返回p下标位置之后的含有endChars字符的下标位置
+     * 例如：expression="jdbcType=VARCHAR", p=0, endChars="="
+     * 返回8,(因为=的下表是8)
+     *
+     * @param expression 表达式
+     * @param p          开始位置
+     * @param endChars   是否包含的内容
+     * @return 返回p之后第一个含有endChars
+     */
     private int skipUntil(String expression, int p, final String endChars) {
         for (int i = p; i < expression.length(); i++) {
             char c = expression.charAt(i);
@@ -106,6 +122,12 @@ public class ParameterExpression extends HashMap<String, String> {
         return expression.length();
     }
 
+    /**
+     * 解析表达式p下标位置之后是否含有":,"字符，如有则进入相应的逻辑
+     *
+     * @param expression 表达式
+     * @param p          开始位置
+     */
     private void jdbcTypeOpt(String expression, int p) {
         p = skipWS(expression, p);
         if (p < expression.length()) {
@@ -119,6 +141,12 @@ public class ParameterExpression extends HashMap<String, String> {
         }
     }
 
+    /**
+     * 直接将字符 ':' 之后的jdbcType等式加入到当前map
+     *
+     * @param expression 表达式
+     * @param p          开始位置
+     */
     private void jdbcType(String expression, int p) {
         int left = skipWS(expression, p);
         int right = skipUntil(expression, left, ",");
@@ -130,6 +158,12 @@ public class ParameterExpression extends HashMap<String, String> {
         option(expression, right + 1);
     }
 
+    /**
+     * 解析表达式,之后的内容, 表达式中的等式加入到当前map
+     *
+     * @param expression 表达式
+     * @param p          开始下标位置
+     */
     private void option(String expression, int p) {
         int left = skipWS(expression, p);
         if (left < expression.length()) {
@@ -143,6 +177,14 @@ public class ParameterExpression extends HashMap<String, String> {
         }
     }
 
+    /**
+     * 过滤空格等等无效字符
+     *
+     * @param str   源字符串
+     * @param start 开始位置
+     * @param end   结束位置
+     * @return 过滤后的字符串
+     */
     private String trimmedStr(String str, int start, int end) {
         while (str.charAt(start) <= 0x20) {
             start++;

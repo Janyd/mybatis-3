@@ -47,7 +47,7 @@ public class SqlSourceBuilder extends BaseBuilder {
     }
 
     /**
-     * 入参映射符号处理器
+     * 入参映射符号处理器，用于解析SQL中#{}内的表达式例如, #{id, jdbcType=int}等等
      */
     private static class ParameterMappingTokenHandler extends BaseBuilder implements TokenHandler {
 
@@ -65,12 +65,24 @@ public class SqlSourceBuilder extends BaseBuilder {
             return parameterMappings;
         }
 
+        /**
+         * 传入被替换表达式，即#{}里的内容
+         *
+         * @param content 表达式
+         * @return 返回被替换的字符
+         */
         @Override
         public String handleToken(String content) {
             parameterMappings.add(buildParameterMapping(content));
             return "?";
         }
 
+        /**
+         * 解析#{}表达式内容
+         *
+         * @param content 表达式
+         * @return 将表达式解析为ParameterMapping对象
+         */
         private ParameterMapping buildParameterMapping(String content) {
             Map<String, String> propertiesMap = parseParameterMapping(content);
             String property = propertiesMap.get("property");
@@ -126,6 +138,12 @@ public class SqlSourceBuilder extends BaseBuilder {
             return builder.build();
         }
 
+        /**
+         * 解析 #{}内容
+         *
+         * @param content 表达式
+         * @return #{}里的内容存入Map
+         */
         private Map<String, String> parseParameterMapping(String content) {
             try {
                 return new ParameterExpression(content);
