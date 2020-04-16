@@ -46,6 +46,9 @@ public class SqlSourceBuilder extends BaseBuilder {
         return new StaticSqlSource(configuration, sql, handler.getParameterMappings());
     }
 
+    /**
+     * 入参映射符号处理器
+     */
     private static class ParameterMappingTokenHandler extends BaseBuilder implements TokenHandler {
 
         private List<ParameterMapping> parameterMappings = new ArrayList<>();

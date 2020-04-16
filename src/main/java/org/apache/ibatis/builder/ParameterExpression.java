@@ -40,6 +40,7 @@ public class ParameterExpression extends HashMap<String, String> {
     }
 
     private void parse(String expression) {
+        //找到不是空格的字符下标
         int p = skipWS(expression, 0);
         if (expression.charAt(p) == '(') {
             expression(expression, p + 1);
@@ -48,9 +49,16 @@ public class ParameterExpression extends HashMap<String, String> {
         }
     }
 
+    /**
+     * 处理()内表达式
+     *
+     * @param expression 表达式
+     * @param left       左括号下一个下标位置
+     */
     private void expression(String expression, int left) {
         int match = 1;
         int right = left + 1;
+        //一直到找到对标的右括号 即match == 0 ，在此之前已经记录一个左括号，所以match=1，再次寻找下一个字符遇到左括号时，match++，如果遇到右括号则match--
         while (match > 0) {
             if (expression.charAt(right) == ')') {
                 match--;
@@ -59,6 +67,7 @@ public class ParameterExpression extends HashMap<String, String> {
             }
             right++;
         }
+        //寻找到最外层括号内的表达式
         put("expression", expression.substring(left, right - 1));
         jdbcTypeOpt(expression, right);
     }
@@ -71,6 +80,13 @@ public class ParameterExpression extends HashMap<String, String> {
         }
     }
 
+    /**
+     * 跳过签名空格
+     *
+     * @param expression 表达式
+     * @param p          当前指针位置
+     * @return 返回不是空格下标
+     */
     private int skipWS(String expression, int p) {
         for (int i = p; i < expression.length(); i++) {
             if (expression.charAt(i) > 0x20) {

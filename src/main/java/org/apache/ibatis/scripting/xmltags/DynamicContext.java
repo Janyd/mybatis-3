@@ -43,6 +43,12 @@ public class DynamicContext {
     private final StringJoiner sqlBuilder = new StringJoiner(" ");
     private int uniqueNumber = 0;
 
+    /**
+     * 构造函数，如果入参不是Map类型，则转化成metaObject方便取值
+     *
+     * @param configuration   配置
+     * @param parameterObject 入参
+     */
     public DynamicContext(Configuration configuration, Object parameterObject) {
         if (parameterObject != null && !(parameterObject instanceof Map)) {
             MetaObject metaObject = configuration.newMetaObject(parameterObject);
@@ -59,10 +65,21 @@ public class DynamicContext {
         return bindings;
     }
 
+    /**
+     * 绑定变量
+     *
+     * @param name  变量名
+     * @param value 值
+     */
     public void bind(String name, Object value) {
         bindings.put(name, value);
     }
 
+    /**
+     * 追加sql片段
+     *
+     * @param sql sql片段
+     */
     public void appendSql(String sql) {
         sqlBuilder.add(sql);
     }
