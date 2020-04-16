@@ -26,6 +26,8 @@ import java.util.Map;
 import java.util.StringJoiner;
 
 /**
+ * 动态SQL上下文，记录动态处理后的最终SQL字符串
+ *
  * @author Clinton Begin
  */
 public class DynamicContext {
