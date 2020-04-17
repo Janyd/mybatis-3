@@ -36,6 +36,8 @@ import java.util.Collections;
 import java.util.List;
 
 /**
+ * 批量执行
+ *
  * @author Jeff Butler
  */
 public class BatchExecutor extends BaseExecutor {

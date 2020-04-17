@@ -23,6 +23,8 @@ import java.util.List;
 import java.util.StringJoiner;
 
 /**
+ * 缓存key
+ *
  * @author Clinton Begin
  */
 public class CacheKey implements Cloneable, Serializable {

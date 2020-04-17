@@ -35,10 +35,29 @@ import java.util.Map;
  */
 public class BoundSql {
 
+    /**
+     * sql，有占位符
+     */
     private final String sql;
+
+    /**
+     * 参数映射
+     */
     private final List<ParameterMapping> parameterMappings;
+
+    /**
+     * 入参
+     */
     private final Object parameterObject;
+
+    /**
+     * 额外添加的参数
+     */
     private final Map<String, Object> additionalParameters;
+
+    /**
+     * 入参元信息
+     */
     private final MetaObject metaParameters;
 
     public BoundSql(Configuration configuration, String sql, List<ParameterMapping> parameterMappings, Object parameterObject) {

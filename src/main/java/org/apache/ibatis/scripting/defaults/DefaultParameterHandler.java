@@ -33,6 +33,8 @@ import java.sql.SQLException;
 import java.util.List;
 
 /**
+ * 默认参数处理器
+ *
  * @author Clinton Begin
  * @author Eduardo Macarron
  */
@@ -69,12 +71,16 @@ public class DefaultParameterHandler implements ParameterHandler {
                     Object value;
                     String propertyName = parameterMapping.getProperty();
                     if (boundSql.hasAdditionalParameter(propertyName)) { // issue #448 ask first for additional params
+                        //额外增加的参数中是否存在该属性，优先级较高
                         value = boundSql.getAdditionalParameter(propertyName);
                     } else if (parameterObject == null) {
+
                         value = null;
                     } else if (typeHandlerRegistry.hasTypeHandler(parameterObject.getClass())) {
+                        //参数类型是否存在于typeHandler如果存在直接当做value
                         value = parameterObject;
                     } else {
+                        //直接从对象中获取属性
                         MetaObject metaObject = configuration.newMetaObject(parameterObject);
                         value = metaObject.getValue(propertyName);
                     }
@@ -84,6 +90,7 @@ public class DefaultParameterHandler implements ParameterHandler {
                         jdbcType = configuration.getJdbcTypeForNull();
                     }
                     try {
+                        //利用typeHandler设置参数，主要是为了参数类型转换
                         typeHandler.setParameter(ps, i + 1, value, jdbcType);
                     } catch (TypeException | SQLException e) {
                         throw new TypeException("Could not set parameters for mapping: " + parameterMapping + ". Cause: " + e, e);
