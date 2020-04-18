@@ -47,6 +47,8 @@ import java.sql.Statement;
 import java.util.*;
 
 /**
+ * 默认结果集处理器
+ *
  * @author Clinton Begin
  * @author Eduardo Macarron
  * @author Iwao AVE!
@@ -56,21 +58,64 @@ public class DefaultResultSetHandler implements ResultSetHandler {
 
     private static final Object DEFERRED = new Object();
 
+    /**
+     * 执行器
+     */
     private final Executor executor;
+
+    /**
+     * 配置
+     */
     private final Configuration configuration;
+
+    /**
+     * MappedStatement对象
+     */
     private final MappedStatement mappedStatement;
+
+    /**
+     * 分页信息
+     */
     private final RowBounds rowBounds;
+
+    /**
+     * 参数处理器
+     */
     private final ParameterHandler parameterHandler;
+
+    /**
+     * 结果处理器
+     */
     private final ResultHandler<?> resultHandler;
+
+    /**
+     * boundSql对象
+     */
     private final BoundSql boundSql;
+
+    /**
+     * typeHandler注册中心
+     */
     private final TypeHandlerRegistry typeHandlerRegistry;
+
+    /**
+     * 对象工厂
+     */
     private final ObjectFactory objectFactory;
+
+    /**
+     * 反射工厂
+     */
     private final ReflectorFactory reflectorFactory;
 
+    /**
+     * 缓存
+     */
     // nested resultmaps
     private final Map<CacheKey, Object> nestedResultObjects = new HashMap<>();
     private final Map<String, Object> ancestorObjects = new HashMap<>();
     private Object previousRowValue;
+
 
     // multiple resultsets
     private final Map<String, ResultMapping> nextResultMaps = new HashMap<>();

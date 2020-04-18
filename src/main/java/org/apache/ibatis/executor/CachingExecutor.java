@@ -29,12 +29,21 @@ import java.sql.SQLException;
 import java.util.List;
 
 /**
+ * 支持二级缓存的Executor
+ *
  * @author Clinton Begin
  * @author Eduardo Macarron
  */
 public class CachingExecutor implements Executor {
 
+    /**
+     * 被委托的执行器
+     */
     private final Executor delegate;
+
+    /**
+     * TransactionalCacheManager 对象
+     */
     private final TransactionalCacheManager tcm = new TransactionalCacheManager();
 
     public CachingExecutor(Executor delegate) {
@@ -90,18 +99,25 @@ public class CachingExecutor implements Executor {
         throws SQLException {
         Cache cache = ms.getCache();
         if (cache != null) {
+            //如果需要清空缓存，则进行清空
             flushCacheIfRequired(ms);
+            //判断是否需要使用缓存
             if (ms.isUseCache() && resultHandler == null) {
+                //存储过程
                 ensureNoOutParams(ms, boundSql);
+                //从缓存中取出
                 @SuppressWarnings("unchecked")
                 List<E> list = (List<E>) tcm.getObject(cache, key);
                 if (list == null) {
+                    //缓存不存在则从数据库取出
                     list = delegate.query(ms, parameterObject, rowBounds, resultHandler, key, boundSql);
+                    //放入缓存
                     tcm.putObject(cache, key, list); // issue #578 and #116
                 }
                 return list;
             }
         }
+        //不使用缓存
         return delegate.query(ms, parameterObject, rowBounds, resultHandler, key, boundSql);
     }
 

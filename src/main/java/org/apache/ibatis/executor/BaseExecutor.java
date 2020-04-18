@@ -374,6 +374,11 @@ public abstract class BaseExecutor implements Executor {
     protected abstract <E> Cursor<E> doQueryCursor(MappedStatement ms, Object parameter, RowBounds rowBounds, BoundSql boundSql)
         throws SQLException;
 
+    /**
+     * 关闭statement对象
+     *
+     * @param statement statement对象
+     */
     protected void closeStatement(Statement statement) {
         if (statement != null) {
             try {
@@ -448,9 +453,17 @@ public abstract class BaseExecutor implements Executor {
         return list;
     }
 
+    /**
+     * 从事务中获取连接，并在连接之上封装一层打印日志的代理层
+     *
+     * @param statementLog 日志
+     * @return 连接
+     * @throws SQLException 异常
+     */
     protected Connection getConnection(Log statementLog) throws SQLException {
         Connection connection = transaction.getConnection();
         if (statementLog.isDebugEnabled()) {
+            //在connection之上封装一层打印日志
             return ConnectionLogger.newInstance(connection, statementLog, queryStack);
         } else {
             return connection;

@@ -56,6 +56,7 @@ public class Jdbc3KeyGenerator implements KeyGenerator {
     @Override
     public void processBefore(Executor executor, MappedStatement ms, Statement stmt, Object parameter) {
         // do nothing
+        //前置无操作
     }
 
     @Override
@@ -68,6 +69,7 @@ public class Jdbc3KeyGenerator implements KeyGenerator {
         if (keyProperties == null || keyProperties.length == 0) {
             return;
         }
+        //自增主键
         try (ResultSet rs = stmt.getGeneratedKeys()) {
             final ResultSetMetaData rsmd = rs.getMetaData();
             final Configuration configuration = ms.getConfiguration();

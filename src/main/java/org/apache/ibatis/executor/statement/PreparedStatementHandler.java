@@ -29,6 +29,8 @@ import java.sql.*;
 import java.util.List;
 
 /**
+ * 预编译Statement处理器
+ *
  * @author Clinton Begin
  */
 public class PreparedStatementHandler extends BaseStatementHandler {
