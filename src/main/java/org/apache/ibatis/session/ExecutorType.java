@@ -16,8 +16,24 @@
 package org.apache.ibatis.session;
 
 /**
+ * 执行器类型
+ *
  * @author Clinton Begin
  */
 public enum ExecutorType {
-    SIMPLE, REUSE, BATCH
+
+    /**
+     * 简单执行器
+     */
+    SIMPLE,
+
+    /**
+     * 可重用执行器
+     */
+    REUSE,
+
+    /**
+     * 批量执行器
+     */
+    BATCH
 }
