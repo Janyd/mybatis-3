@@ -44,9 +44,25 @@ public class BatchExecutor extends BaseExecutor {
 
     public static final int BATCH_UPDATE_RETURN_VALUE = Integer.MIN_VALUE + 1002;
 
+    /**
+     * statement数组
+     */
     private final List<Statement> statementList = new ArrayList<>();
+
+    /**
+     * BatchResult数组
+     * 每一个BatchResult元素，对应一个Statement的结果
+     */
     private final List<BatchResult> batchResultList = new ArrayList<>();
+
+    /**
+     * 记录当前sql
+     */
     private String currentSql;
+
+    /**
+     * 当前MappedStatement对象
+     */
     private MappedStatement currentStatement;
 
     public BatchExecutor(Configuration configuration, Transaction transaction) {
@@ -60,6 +76,7 @@ public class BatchExecutor extends BaseExecutor {
         final BoundSql boundSql = handler.getBoundSql();
         final String sql = boundSql.getSql();
         final Statement stmt;
+        //匹配最后一次currentSql与currentStatement，则聚合到BatchResult
         if (sql.equals(currentSql) && ms.equals(currentStatement)) {
             int last = statementList.size() - 1;
             stmt = statementList.get(last);
@@ -115,6 +132,7 @@ public class BatchExecutor extends BaseExecutor {
         try {
             List<BatchResult> results = new ArrayList<>();
             if (isRollback) {
+                //如回滚则返回空数组
                 return Collections.emptyList();
             }
             for (int i = 0, n = statementList.size(); i < n; i++) {

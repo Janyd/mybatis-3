@@ -33,6 +33,8 @@ import java.sql.Statement;
 import java.util.List;
 
 /**
+ * 简单StatementHandler
+ *
  * @author Clinton Begin
  */
 public class SimpleStatementHandler extends BaseStatementHandler {

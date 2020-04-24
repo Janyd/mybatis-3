@@ -34,6 +34,8 @@ import java.sql.SQLException;
 import java.sql.Statement;
 
 /**
+ * Statement抽象类，抽取公共方法
+ *
  * @author Clinton Begin
  */
 public abstract class BaseStatementHandler implements StatementHandler {
@@ -59,6 +61,7 @@ public abstract class BaseStatementHandler implements StatementHandler {
         this.typeHandlerRegistry = configuration.getTypeHandlerRegistry();
         this.objectFactory = configuration.getObjectFactory();
 
+        // <1> 如果 boundSql 为空，一般是写类操作，例如：insert、update、delete ，则先获得自增主键，然后再创建 BoundSql 对象
         if (boundSql == null) { // issue #435, get the key before calculating the statement
             generateKeys(parameterObject);
             boundSql = mappedStatement.getBoundSql(parameterObject);
@@ -66,7 +69,9 @@ public abstract class BaseStatementHandler implements StatementHandler {
 
         this.boundSql = boundSql;
 
+        //创建参数处理器
         this.parameterHandler = configuration.newParameterHandler(mappedStatement, parameterObject, boundSql);
+        //创建结果集处理器
         this.resultSetHandler = configuration.newResultSetHandler(executor, mappedStatement, rowBounds, parameterHandler, resultHandler, boundSql);
     }
 
@@ -98,8 +103,22 @@ public abstract class BaseStatementHandler implements StatementHandler {
         }
     }
 
+    /**
+     * 公共方法从connection获取statement对象
+     *
+     * @param connection 连接
+     * @return statement对象
+     * @throws SQLException 异常
+     */
     protected abstract Statement instantiateStatement(Connection connection) throws SQLException;
 
+    /**
+     * 给statement设置超时时间
+     *
+     * @param stmt               statement对象
+     * @param transactionTimeout 超时时间
+     * @throws SQLException 异常
+     */
     protected void setStatementTimeout(Statement stmt, Integer transactionTimeout) throws SQLException {
         Integer queryTimeout = null;
         if (mappedStatement.getTimeout() != null) {
@@ -113,6 +132,12 @@ public abstract class BaseStatementHandler implements StatementHandler {
         StatementUtil.applyTransactionTimeout(stmt, queryTimeout, transactionTimeout);
     }
 
+    /**
+     * 设置fetchSize大小
+     *
+     * @param stmt statement对象
+     * @throws SQLException 异常
+     */
     protected void setFetchSize(Statement stmt) throws SQLException {
         Integer fetchSize = mappedStatement.getFetchSize();
         if (fetchSize != null) {

@@ -38,6 +38,8 @@ import java.util.Map;
 import java.util.Set;
 
 /**
+ * 利用Javassist创建代理
+ *
  * @author Eduardo Macarron
  */
 public class JavassistProxyFactory implements org.apache.ibatis.executor.loader.ProxyFactory {

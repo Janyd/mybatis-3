@@ -25,8 +25,24 @@ import java.sql.Statement;
  */
 public interface KeyGenerator {
 
+    /**
+     * 执行SQL前置操作
+     *
+     * @param executor  执行器
+     * @param ms        MappedStatement对象
+     * @param stmt      statement对象
+     * @param parameter 入参
+     */
     void processBefore(Executor executor, MappedStatement ms, Statement stmt, Object parameter);
 
+    /**
+     * 执行SQL后置操作
+     *
+     * @param executor  执行器
+     * @param ms        MappedStatement对象
+     * @param stmt      statement对象
+     * @param parameter 入参
+     */
     void processAfter(Executor executor, MappedStatement ms, Statement stmt, Object parameter);
 
 }

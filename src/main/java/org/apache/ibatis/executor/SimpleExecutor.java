@@ -83,6 +83,7 @@ public class SimpleExecutor extends BaseExecutor {
         return Collections.emptyList();
     }
 
+
     private Statement prepareStatement(StatementHandler handler, Log statementLog) throws SQLException {
         Statement stmt;
         Connection connection = getConnection(statementLog);

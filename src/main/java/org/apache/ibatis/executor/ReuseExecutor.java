@@ -34,10 +34,15 @@ import java.util.List;
 import java.util.Map;
 
 /**
+ * 可重用Executor
+ *
  * @author Clinton Begin
  */
 public class ReuseExecutor extends BaseExecutor {
 
+    /**
+     * 可重用Statement，以SQL作为key
+     */
     private final Map<String, Statement> statementMap = new HashMap<>();
 
     public ReuseExecutor(Configuration configuration, Transaction transaction) {
@@ -82,9 +87,11 @@ public class ReuseExecutor extends BaseExecutor {
         BoundSql boundSql = handler.getBoundSql();
         String sql = boundSql.getSql();
         if (hasStatementFor(sql)) {
+            //判断缓存池中是否存在该sql的statement对象，如有则取出来使用
             stmt = getStatement(sql);
             applyTransactionTimeout(stmt);
         } else {
+            //如无，则创建新statement对象，并存入statementMap中
             Connection connection = getConnection(statementLog);
             stmt = handler.prepare(connection, transaction.getTimeout());
             putStatement(sql, stmt);
@@ -93,6 +100,12 @@ public class ReuseExecutor extends BaseExecutor {
         return stmt;
     }
 
+    /**
+     * 根据sql判断是否存在statementMap里
+     *
+     * @param sql sql
+     * @return 是否存在缓存中
+     */
     private boolean hasStatementFor(String sql) {
         try {
             Statement statement = statementMap.get(sql);

@@ -22,6 +22,8 @@ import java.util.List;
 import java.util.Properties;
 
 /**
+ * 代理工厂
+ *
  * @author Eduardo Macarron
  */
 public interface ProxyFactory {
@@ -30,6 +32,16 @@ public interface ProxyFactory {
         // NOP
     }
 
+    /**
+     * 创建代理对象
+     * @param target 目标对象
+     * @param lazyLoader
+     * @param configuration
+     * @param objectFactory
+     * @param constructorArgTypes
+     * @param constructorArgs
+     * @return
+     */
     Object createProxy(Object target, ResultLoaderMap lazyLoader, Configuration configuration, ObjectFactory objectFactory, List<Class<?>> constructorArgTypes, List<Object> constructorArgs);
 
 }

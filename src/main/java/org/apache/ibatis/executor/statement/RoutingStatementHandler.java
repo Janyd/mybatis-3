@@ -30,6 +30,8 @@ import java.sql.Statement;
 import java.util.List;
 
 /**
+ * 路由Statement处理器，在构造函数中选择正确的相应的StatementHandler
+ *
  * @author Clinton Begin
  */
 public class RoutingStatementHandler implements StatementHandler {

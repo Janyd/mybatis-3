@@ -26,6 +26,12 @@ public class InterceptorChain {
 
     private final List<Interceptor> interceptors = new ArrayList<>();
 
+    /**
+     * 将target包裹，生成动态代理来进行拦截器的执行
+     *
+     * @param target 目标对象
+     * @return 代理对象
+     */
     public Object pluginAll(Object target) {
         for (Interceptor interceptor : interceptors) {
             target = interceptor.plugin(target);
