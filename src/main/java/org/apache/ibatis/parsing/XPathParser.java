@@ -250,6 +250,14 @@ public class XPathParser {
         return new XNode(this, node, variables);
     }
 
+    /**
+     * 解析xpath表达式
+     *
+     * @param expression 表达式
+     * @param root       节点对象，从哪个节点开始
+     * @param returnType 返回的类型
+     * @return 数据
+     */
     private Object evaluate(String expression, Object root, QName returnType) {
         try {
             return xpath.evaluate(expression, root, returnType);
