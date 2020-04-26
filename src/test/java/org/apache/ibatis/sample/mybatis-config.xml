@@ -8,6 +8,8 @@
     <!-- autoMappingBehavior should be set in each test case -->
 
     <properties resource="org/apache/ibatis/databases/blog/blog-derby.properties">
+        <property name="username" value="username"/>
+        <property name="password" value="password"/>
     </properties>
 
     <settings>
