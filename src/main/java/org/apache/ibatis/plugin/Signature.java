@@ -31,6 +31,7 @@ import java.lang.annotation.Target;
 @Target({})
 public @interface Signature {
     /**
+     * 指定四大金刚：Executor、StatementHandler、ParameterHandler、ResultSetHandler
      * Returns the java type.
      *
      * @return the java type
@@ -38,6 +39,7 @@ public @interface Signature {
     Class<?> type();
 
     /**
+     * 指定上面接口中的方法
      * Returns the method name.
      *
      * @return the method name
@@ -45,6 +47,7 @@ public @interface Signature {
     String method();
 
     /**
+     * 指定上面方法的参数类型，并必须
      * Returns java types for method argument.
      * @return java types for method argument
      */

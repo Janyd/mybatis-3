@@ -51,34 +51,45 @@ public class XMLStatementBuilder extends BaseBuilder {
     }
 
     public void parseStatementNode() {
+        //获取语句的ID（即Mapper的方法名称）
         String id = context.getStringAttribute("id");
+        //数据库厂商标识
         String databaseId = context.getStringAttribute("databaseId");
-
+        //厂商标识不匹配不解析，用于如果全局配置数据库厂商标识是oracle，而当前是mysql，则会抛弃解析当前Mapper.xml(为了能够连不同数据库有相应的选择)
         if (!databaseIdMatchesCurrent(id, databaseId, this.requiredDatabaseId)) {
             return;
         }
 
+        //获取当前标签类型(select、insert、update、delete)
         String nodeName = context.getNode().getNodeName();
         SqlCommandType sqlCommandType = SqlCommandType.valueOf(nodeName.toUpperCase(Locale.ENGLISH));
         boolean isSelect = sqlCommandType == SqlCommandType.SELECT;
+        //属性(是否清除缓存，是否使用缓存等等)
         boolean flushCache = context.getBooleanAttribute("flushCache", !isSelect);
         boolean useCache = context.getBooleanAttribute("useCache", isSelect);
         boolean resultOrdered = context.getBooleanAttribute("resultOrdered", false);
 
+
         // Include Fragments before parsing
+        //此处能够为了应用上SQL片段
         XMLIncludeTransformer includeParser = new XMLIncludeTransformer(configuration, builderAssistant);
+        //节点内容会被直接替换
         includeParser.applyIncludes(context.getNode());
 
+        //获取入参类型
         String parameterType = context.getStringAttribute("parameterType");
         Class<?> parameterTypeClass = resolveClass(parameterType);
 
+        //如果有自定义语言驱动，会获取相应的语言驱动
         String lang = context.getStringAttribute("lang");
         LanguageDriver langDriver = getLanguageDriver(lang);
 
         // Parse selectKey after includes and remove them.
+        //解析selectKey，selectKey在于insert语句，能够获取得到刚添加的记录拿到自增长的主键，同时节点<selectKey>内容会删除
         processSelectKeyNodes(id, parameterTypeClass, langDriver);
 
         // Parse the SQL (pre: <selectKey> and <include> were parsed and removed)
+        //解析主键生成方式
         KeyGenerator keyGenerator;
         String keyStatementId = id + SelectKeyGenerator.SELECT_KEY_SUFFIX;
         keyStatementId = builderAssistant.applyCurrentNamespace(keyStatementId, true);

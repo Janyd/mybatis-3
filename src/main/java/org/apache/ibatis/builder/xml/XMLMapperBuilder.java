@@ -181,11 +181,17 @@ public class XMLMapperBuilder extends BaseBuilder {
         }
     }
 
+    /**
+     * 查找缓存引用
+     * @param context
+     */
     private void cacheRefElement(XNode context) {
         if (context != null) {
+            //添加缓存引用
             configuration.addCacheRef(builderAssistant.getCurrentNamespace(), context.getStringAttribute("namespace"));
             CacheRefResolver cacheRefResolver = new CacheRefResolver(builderAssistant, context.getStringAttribute("namespace"));
             try {
+                //这一步是为了判断引用目标缓存是否已加载，如果未加载加入将当前缓存引用加入到未完成加载集合中
                 cacheRefResolver.resolveCacheRef();
             } catch (IncompleteElementException e) {
                 configuration.addIncompleteCacheRef(cacheRefResolver);
@@ -193,6 +199,10 @@ public class XMLMapperBuilder extends BaseBuilder {
         }
     }
 
+    /**
+     * 解析缓存
+     * @param context
+     */
     private void cacheElement(XNode context) {
         if (context != null) {
             String type = context.getStringAttribute("type", "PERPETUAL");

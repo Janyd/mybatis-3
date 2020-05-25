@@ -105,6 +105,7 @@ public class MapperAnnotationBuilder {
                 }
             }
         }
+        //解析未完成方法
         parsePendingMethods();
     }
 
@@ -128,6 +129,9 @@ public class MapperAnnotationBuilder {
         }
     }
 
+    /**
+     * 加载XML资源
+     */
     private void loadXmlResource() {
         // Spring may not know the real resource name so we check a flag
         // to prevent loading again a resource twice
